@@ -92,7 +92,7 @@
             }
 
             async function guardarEnGitHub() {
-                const respuesta = await fetch("/api/guardar", {
+                const respuesta = await fetch("https://registro-alumnos-f9n4sjs5g-oscarmoreno203s-projects.vercel.app/api/guardar", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ registros })
@@ -108,5 +108,6 @@
 </body>
 
 </html>
+
 
 
