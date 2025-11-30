@@ -9,7 +9,7 @@
 <body class="w3-content">
     <div justify-content="center" class="w3-container w3-center">
         <div class="w3-light-blue">
-        <h2>Registrar alumno</h2>
+            <h2>Registrar alumno</h2>
         </div>
         <br>
 
@@ -24,7 +24,9 @@
             <input type="number" id="calif" required>
             <br><br>
 
-            <button type="submit" class="w3-button w3-green w3-hover-light-green w3-ripple">Guardar registro</button>
+            <button onclick="guardarEnGitHub()" class="w3-button w3-green w3-hover-light-green w3-ripple">
+                Guardar registro
+            </button>
         </form>
 
         <div class="w3-light-blue">
@@ -43,9 +45,18 @@
         </table>
 
         <br>
-        <button class="w3-button w3-green w3-hover-light-green w3-ripple" onclick="descargarJSON()">Descargar JSON</button>
+        <button class="w3-button w3-green w3-hover-light-green w3-ripple" onclick="descargarJSON()">Descargar
+            JSON</button>
 
         <script>
+            fetch("https://raw.githubusercontent.com/OscarMoreno203/registro-alumnos/main/registros.json")
+                .then(r => r.json())
+                .then(data => {
+                    registros = data;
+                    mostrarTabla();
+                })
+                .catch(() => console.log("No hay registros aún"));
+
             let registros = [];
 
             document.getElementById("formRegistro").addEventListener("submit", function (e) {
@@ -79,6 +90,18 @@
                 a.download = "registros.json";
                 a.click();
             }
+
+            async function guardarEnGitHub() {
+                const respuesta = await fetch("/api/guardar", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ registros })
+                });
+
+                const data = await respuesta.json();
+                alert("Registros guardados en GitHub :)");
+            }
+
         </script>
     </div>
 
