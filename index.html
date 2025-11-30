@@ -24,7 +24,7 @@
             <input type="number" id="calif" required>
             <br><br>
 
-            <button onclick="guardarEnGitHub()" class="w3-button w3-green w3-hover-light-green w3-ripple">
+            <button type="submit" class="w3-button w3-green w3-hover-light-green w3-ripple">
                 Guardar registro
             </button>
         </form>
@@ -59,16 +59,19 @@
 
             let registros = [];
 
-            document.getElementById("formRegistro").addEventListener("submit", function (e) {
+            document.getElementById("formRegistro").addEventListener("submit", async function (e) {
                 e.preventDefault();
-
+            
                 const nombre = document.getElementById("nombre").value;
                 const calif = document.getElementById("calif").value;
-
+            
                 registros.push({ nombre, calif });
-
+            
                 mostrarTabla();
                 this.reset();
+            
+                // 🔥 se llama SOLO DESPUÉS de actualizar registros
+                await guardarEnGitHub();
             });
 
             function mostrarTabla() {
@@ -108,6 +111,7 @@
 </body>
 
 </html>
+
 
 
 
