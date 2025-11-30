@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Registro de alumnos</title>
+    <link rel="stylesheet" href="w3.css">
+</head>
+
+<body class="w3-content">
+    <div justify-content="center" class="w3-container w3-center">
+        <div class="w3-light-blue">
+        <h2>Registrar alumno</h2>
+        </div>
+        <br>
+
+        <form id="formRegistro">
+            <label>Nombre:</label>
+            <br>
+            <input type="text" id="nombre" required>
+            <br><br>
+
+            <label>Calificacion:</label>
+            <br>
+            <input type="number" id="calif" required>
+            <br><br>
+
+            <button type="submit" class="w3-button w3-green w3-hover-light-green w3-ripple">Guardar registro</button>
+        </form>
+
+        <div class="w3-light-blue">
+            <h2>Tabla de registros</h2>
+        </div>
+        <br>
+
+        <table class="w3-table-all w3-center" border="1" id="tablaRegistros">
+            <thead>
+                <tr class="w3-cyan">
+                    <th>Nombre</th>
+                    <th>Calificación</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <br>
+        <button class="w3-button w3-green w3-hover-light-green w3-ripple" onclick="descargarJSON()">Descargar JSON</button>
+
+        <script>
+            let registros = [];
+
+            document.getElementById("formRegistro").addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                const nombre = document.getElementById("nombre").value;
+                const calif = document.getElementById("calif").value;
+
+                registros.push({ nombre, calif });
+
+                mostrarTabla();
+                this.reset();
+            });
+
+            function mostrarTabla() {
+                const tbody = document.querySelector("#tablaRegistros tbody");
+                tbody.innerHTML = "";
+
+                registros.forEach(reg => {
+                    const fila = `<tr><td>${reg.nombre}</td><td>${reg.calif}</td></tr>`;
+                    tbody.innerHTML += fila;
+                });
+            }
+
+            function descargarJSON() {
+                const blob = new Blob([JSON.stringify(registros, null, 2)], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "registros.json";
+                a.click();
+            }
+        </script>
+    </div>
+
+</body>
+
+</html>
