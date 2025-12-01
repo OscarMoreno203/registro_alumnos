@@ -49,14 +49,6 @@
             JSON</button>
 
         <script>
-            fetch("https://raw.githubusercontent.com/OscarMoreno203/registro-alumnos/main/registros.json")
-                .then(r => r.json())
-                .then(data => {
-                    registros = data;
-                    mostrarTabla();
-                })
-                .catch(() => console.log("No hay registros aún"));
-
             let registros = [];
 
             document.getElementById("formRegistro").addEventListener("submit", function (e) {
@@ -108,3 +100,4 @@
 </body>
 
 </html>
+
