@@ -24,7 +24,7 @@
             <input type="number" id="calif" required>
             <br><br>
 
-            <button type="submit" class="w3-button w3-green w3-hover-light-green w3-ripple">
+            <button onclick="guardarEnGitHub()" class="w3-button w3-green w3-hover-light-green w3-ripple">
                 Guardar registro
             </button>
         </form>
@@ -47,9 +47,9 @@
         <br>
         <button class="w3-button w3-green w3-hover-light-green w3-ripple" onclick="descargarJSON()">Descargar
             JSON</button>
-        <script src="functions.js"></script>
+
         <script>
-            fetch("https://raw.githubusercontent.com/OscarMoreno203/registro_alumnos/refs/heads/main/registros.json")
+            fetch("https://raw.githubusercontent.com/OscarMoreno203/registro-alumnos/main/registros.json")
                 .then(r => r.json())
                 .then(data => {
                     registros = data;
@@ -59,19 +59,16 @@
 
             let registros = [];
 
-            document.getElementById("formRegistro").addEventListener("submit", async function (e) {
+            document.getElementById("formRegistro").addEventListener("submit", function (e) {
                 e.preventDefault();
-            
+
                 const nombre = document.getElementById("nombre").value;
                 const calif = document.getElementById("calif").value;
-            
+
                 registros.push({ nombre, calif });
-            
+
                 mostrarTabla();
                 this.reset();
-            
-                // 🔥 se llama SOLO DESPUÉS de actualizar registros
-                await guardarEnGitHub();
             });
 
             function mostrarTabla() {
@@ -95,7 +92,7 @@
             }
 
             async function guardarEnGitHub() {
-                const respuesta = await fetch("https://registro-alumnos-f9n4sjs5g-oscarmoreno203s-projects.vercel.app/api/guardar", {
+                const respuesta = await fetch("/api/guardar", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ registros })
@@ -111,8 +108,3 @@
 </body>
 
 </html>
-
-
-
-
-
