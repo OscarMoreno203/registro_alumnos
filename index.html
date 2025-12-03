@@ -148,6 +148,11 @@
             }
 
             function abrirMenuEdicion(id, nombreActual, califActual) {
+                abrirMenuEdicion_Nombre(id, nombreActual, califActual);
+                abrirMenuEdicion_Calif(id, nombreActual, califActual);
+            }
+
+            function abrirMenuEdicion_Nombre(id, nombreActual, califActual) {
                 // Pedir el nuevo nombre
                 const nuevoNombre = prompt(`Modificar nombre de ${nombreActual}:`, nombreActual);
 
@@ -156,6 +161,11 @@
                     return;
                 }
 
+                // Llamar a la función de modificación
+                modificarRegistro(id, nuevoNombre, califActual);
+            }
+
+            function abrirMenuEdicion_Calif(id, nombreActual, califActual) {
                 // Pedir la nueva calificación
                 let nuevaCalif;
                 do {
@@ -174,7 +184,7 @@
                 } while (isNaN(nuevaCalif));
 
                 // Llamar a la función de modificación
-                modificarRegistro(id, nuevoNombre, nuevaCalif);
+                modificarRegistro(id, nombreActual, nuevaCalif);
             }
 
             //  Funciones de Interfaz de Usuario
@@ -184,9 +194,9 @@
                 tbody.innerHTML = "";
 
                 registros.forEach(reg => {
-                    const fila = `<tr onclick="abrirMenuEdicion('${reg.id}', '${reg.nombre}', '${reg.calif}')">
-                          <td>${reg.nombre}</td>
-                          <td>${reg.calif}</td>
+                    const fila = `<tr>
+                          <td class='w3-hover-light-blue w3-ripple' onclick="abrirMenuEdicion_Nombre('${reg.id}', '${reg.nombre}', '${reg.calif}')">${reg.nombre}</td>
+                          <td class='w3-hover-light-blue w3-ripple' onclick="abrirMenuEdicion_Nombre('${reg.id}', '${reg.nombre}', '${reg.calif}')">${reg.calif}</td>
                           <td><button class="w3-button w3-red w3-round-large w3-tiny" onclick="event.stopPropagation(); borrarRegistro('${reg.id}')">Borrar</button></td>
                       </tr>`;
                     tbody.innerHTML += fila;
