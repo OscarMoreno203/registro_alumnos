@@ -89,7 +89,7 @@
                     const docRef = await db.collection("alumnos").add(nuevoAlumno);
 
                     // Añadir el alumno al array local con su ID de Firestore
-                    registros.push({ id: docRef.id, nombre: alumno.nombre, calif: alumno.calif });
+                    registros.push({ id: docRef.id, nombre: nuevoAlumno.nombre, calif: nuevoAlumno.calif });
 
                     mostrarTabla();
                     alert("Registro guardado en Firestore con éxito!");
