@@ -41,6 +41,8 @@
                 <tr class="w3-cyan">
                     <th>Nombre</th>
                     <th>Calificación</th>
+                    <th>Acciones</th>
+                </tr>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -100,6 +102,81 @@
                 }
             }
 
+            async function borrarRegistro(id) {
+                if (!confirm("¿Está seguro de que desea borrar este registro?")) {
+                    return; // Detiene la función si el usuario cancela
+                }
+
+                try {
+                    // Elimina el documento de Firestore
+                    await db.collection("alumnos").doc(id).delete();
+
+                    // Elimina el registro del array local 'registros'
+                    registros = registros.filter(reg => reg.id !== id);
+
+                    mostrarTabla();
+                    alert("Registro borrado con éxito.");
+
+                } catch (error) {
+                    console.error("Error al borrar el registro: ", error);
+                    alert("Error al intentar borrar el registro.");
+                }
+            }
+
+            async function modificarRegistro(id, nuevoNombre, nuevaCalif) {
+                try {
+                    // Actualiza el documento en Firestore
+                    await db.collection("alumnos").doc(id).update({
+                        nombre: nuevoNombre,
+                        calif: nuevaCalif
+                    });
+
+                    // Actualiza el registro en el array local 'registros'
+                    const index = registros.findIndex(reg => reg.id === id);
+                    if (index > -1) {
+                        registros[index].nombre = nuevoNombre;
+                        registros[index].calif = nuevaCalif;
+                    }
+
+                    mostrarTabla();
+                    alert("Registro modificado con éxito.");
+
+                } catch (error) {
+                    console.error("Error al modificar el registro: ", error);
+                    alert("Error al intentar modificar el registro.");
+                }
+            }
+
+            function abrirMenuEdicion(id, nombreActual, califActual) {
+                // Pedir el nuevo nombre
+                const nuevoNombre = prompt(`Modificar nombre de ${nombreActual}:`, nombreActual);
+
+                // Si el usuario cancela el nombre, detenemos la edición
+                if (nuevoNombre === null || nuevoNombre.trim() === "") {
+                    return;
+                }
+
+                // Pedir la nueva calificación
+                let nuevaCalif;
+                do {
+                    const inputCalif = prompt(`Modificar calificación de ${nombreActual}:`, califActual);
+
+                    // Si el usuario cancela la calificación
+                    if (inputCalif === null) {
+                        return;
+                    }
+
+                    nuevaCalif = parseFloat(inputCalif);
+                    if (isNaN(nuevaCalif)) {
+                        alert("Por favor, ingrese un número válido para la calificación.");
+                    }
+
+                } while (isNaN(nuevaCalif));
+
+                // Llamar a la función de modificación
+                modificarRegistro(id, nuevoNombre, nuevaCalif);
+            }
+
             //  Funciones de Interfaz de Usuario
 
             function mostrarTabla() {
@@ -107,7 +184,11 @@
                 tbody.innerHTML = "";
 
                 registros.forEach(reg => {
-                    const fila = `<tr><td>${reg.nombre}</td><td>${reg.calif}</td></tr>`;
+                    const fila = `<tr onclick="abrirMenuEdicion('${reg.id}', '${reg.nombre}', '${reg.calif}')">
+                          <td>${reg.nombre}</td>
+                          <td>${reg.calif}</td>
+                          <td><button class="w3-button w3-red w3-round-large w3-tiny" onclick="event.stopPropagation(); borrarRegistro('${reg.id}')">Borrar</button></td>
+                      </tr>`;
                     tbody.innerHTML += fila;
                 });
             }
