@@ -4,6 +4,8 @@
 <head>
     <title>Registro de alumnos</title>
     <link rel="stylesheet" href="w3.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 
 <body class="w3-content">
@@ -24,7 +26,7 @@
             <input type="number" id="calif" required>
             <br><br>
 
-            <button onclick="guardarEnGitHub()" class="w3-button w3-green w3-hover-light-green w3-ripple">
+            <button class="w3-button w3-green w3-hover-light-green w3-ripple">
                 Guardar registro
             </button>
         </form>
@@ -49,6 +51,21 @@
             JSON</button>
 
         <script>
+            // ¡REEMPLAZA ESTO CON TUS PROPIAS CREDENCIALES DE FIREBASE!
+            const firebaseConfig = {
+                apiKey: "AIzaSyD4-zLL5XUx0L3CZN4e5FiuAGEuHKeQ8F4",
+                authDomain: "registro-alumnos-156c9.firebaseapp.com",
+                projectId: "registro-alumnos-156c9",
+                storageBucket: "registro-alumnos-156c9.firebasestorage.app",
+                messagingSenderId: "631143806444",
+                appId: "1:631143806444:web:d927930fa7a52d8e63fcc9",
+                measurementId: "G-9ZD9HY9VYS"
+            };
+
+            // Inicializar Firebase
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+
             let registros = [];
 
             document.getElementById("formRegistro").addEventListener("submit", function (e) {
@@ -63,15 +80,65 @@
                 this.reset();
             });
 
+            // Cargar datos al iniciar la página
+            async function cargarRegistros() {
+                try {
+                    const snapshot = await db.collection("alumnos").get();
+                    registros = []; // Limpiar registros anteriores
+                    snapshot.forEach(doc => {
+                        // El ID de Firestore se guarda en el registro, si lo necesitas
+                        registros.push({ id: doc.id, ...doc.data() });
+                    });
+                    mostrarTabla();
+                } catch (error) {
+                    console.error("Error al cargar registros: ", error);
+                }
+            }
+
+            // Llamar al inicio
+            cargarRegistros();
+
+            document.getElementById("formRegistro").addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                const nombre = document.getElementById("nombre").value;
+                const calif = document.getElementById("calif").value;
+
+                // Nueva función para guardar en la base de datos
+                guardarRegistro({ nombre, calif });
+
+                this.reset();
+            });
+
+            async function guardarRegistro(nuevoAlumno) {
+                try {
+                    // Añadir el documento a la colección "alumnos"
+                    const docRef = await db.collection("alumnos").add(nuevoAlumno);
+
+                    // Añadir el alumno al array local con su ID de Firestore
+                    registros.push({ id: docRef.id, ...nuevoAlumno });
+
+                    mostrarTabla();
+                    alert("Registro guardado en Firestore con éxito!");
+
+                } catch (error) {
+                    console.error("Error al añadir documento: ", error);
+                    alert("Error al guardar el registro.");
+                }
+            }
+
+            // La función mostrarTabla() ahora también debe manejar la carga inicial
             function mostrarTabla() {
                 const tbody = document.querySelector("#tablaRegistros tbody");
                 tbody.innerHTML = "";
 
                 registros.forEach(reg => {
+                    // Asegúrate de usar los campos correctos (nombre y calif)
                     const fila = `<tr><td>${reg.nombre}</td><td>${reg.calif}</td></tr>`;
                     tbody.innerHTML += fila;
                 });
             }
+
 
             function descargarJSON() {
                 const blob = new Blob([JSON.stringify(registros, null, 2)], { type: "application/json" });
@@ -82,18 +149,6 @@
                 a.download = "registros.json";
                 a.click();
             }
-
-            async function guardarEnGitHub() {
-                const respuesta = await fetch("/api/guardar", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ registros })
-                });
-
-                const data = await respuesta.json();
-                alert("Registros guardados en GitHub :)");
-            }
-
         </script>
     </div>
 
