@@ -196,7 +196,7 @@
                 registros.forEach(reg => {
                     const fila = `<tr>
                           <td class='w3-hover-light-blue w3-ripple' onclick="abrirMenuEdicion_Nombre('${reg.id}', '${reg.nombre}', '${reg.calif}')">${reg.nombre}</td>
-                          <td class='w3-hover-light-blue w3-ripple' onclick="abrirMenuEdicion_Nombre('${reg.id}', '${reg.nombre}', '${reg.calif}')">${reg.calif}</td>
+                          <td class='w3-hover-light-blue w3-ripple' onclick="abrirMenuEdicion_Calif('${reg.id}', '${reg.nombre}', '${reg.calif}')">${reg.calif}</td>
                           <td><button class="w3-button w3-red w3-round-large w3-tiny" onclick="event.stopPropagation(); borrarRegistro('${reg.id}')">Borrar</button></td>
                       </tr>`;
                     tbody.innerHTML += fila;
